@@ -4,19 +4,16 @@
 # In[1]:
 
 
+# This project built a motor company structure that takes care of outside customer services as well as internal employees within the company.
+# This project demonstrates OOP concepts: class/objects/polymorphism/encapsulation/inheritance/data abstraction
+from abc import ABC, abstractmethod
 import pdb # debugger
 import sys
 
+
 def main():
     # pdb.set_trace() # trace code, type n for nextline.
-    # Current Structure: finance/customer support/sales/services/hr (TBD)
-    # sunmotors_sales: Sales dept that directly deals with customer sales.
-    # sunmotors_services: Services dept deals with maintenance, replacement, accessories.
-    # sunmotors_customersupport (Complete): In each department, if it fails to type in the proper number it will be directed to customer support.
-    # sunmotors_finance (internal): Finance dept that deals with sales, revenue, etc.
-    # sunmotors_egr (internal): EGR dept
-    # sunmotors_hr (internal): HR dept 
-    # Additional Research: Learn how to use internal/hidden classes 
+    # Current Departments: finance/customer support/sales/services/hr/egr/etc
     
     def credentials_check():
         
@@ -89,58 +86,145 @@ def main():
 
 
 class sunmotors():
-    # Test Drive
+    
     sunmotors_list = []
     
-    def __init__(self):
+    # __init__ is known as the constructor
+    # Method Overloading - Sets all values to none. Passing any number of parameters doesn't cause an error.
+    
+    def __init__(self,model=None,year=None,msrp=None,traits=None):
         print("Sunmotors Vehicle Created")
-        
-    def vehicle_type(self):
-        print("Sunmotors Vehicle")
-        
-    def company(self):
-        print("Sunmotors")
-        
-        
-class sunmotors_suvs(sunmotors):
-    
-    def __init__(self,model,year,msrp,traits,inventory):
-        
-        sunmotors.__init__(self)
         self.model = model
         self.year = year
         self.msrp = msrp
         self.traits = traits
-        self.inventory = inventory
-        print("Sunmotors SUV Created")
-        sunmotors.sunmotors_list.append(self)
-        
-    def vehicle_type(self):
-        print("Sunmotors SUV")
         
         
-class sunmotors_sedans(sunmotors):
+class car_functions:
     
-    def __init__(self,model,year,msrp,traits,inventory):
+    def basic_specs(self):
+        print('Vehicle Specs: ' + '\n' + str(self.model) + '\n' + str(self.year) + '\n' + str(self.msrp) + '\n' + str(self.traits))
+    
+    def test_drive(self):
+        print("Test Driving " + self.model)
         
-        sunmotors.__init__(self)
-        self.model = model
-        self.year = year
-        self.msrp = msrp
-        self.traits = traits
-        self.inventory = inventory
-        print("Sunmotors Sedan Created")
+# Multiple inheritance & Abstract class        
+class sunmotors_electric(sunmotors,car_functions,ABC):
+    
+    def __init__(self,model=None,year=None,msrp=None,traits=None):
+        print("Sunmotors Electric Vehicle Created")
+        super().__init__(model,year,msrp,traits)
+    
+    # Method overriding, abstract method
+    @abstractmethod
+    def cartype(self):
+        pass
+    
+# Multiple inheritance & Abstract class            
+class sunmotors_hydrogen(sunmotors,car_functions,ABC):
+    
+    def __init__(self,model,year,msrp,traits):
+        print("Sunmotors Hydrogen Vehicle Created")
+        super().__init__(model,year,msrp,traits)
+        
+    # Method overriding, abstract method
+    @abstractmethod
+    def cartype(self):
+        pass
+        
+# Multi-level inheritance        
+class sunmotors_hydrogen_suvs(sunmotors_hydrogen):
+    
+    # Class attribute
+    attr1 = "SUV"
+    
+    # Instance attribute
+    def __init__(self,model=None,year=None,msrp=None,traits=None,inventory=None):
+        print("Sunmotors Hydrogen SUV Created")
+        super().__init__(model,year,msrp,traits)
+        self.__inventory = inventory
         sunmotors.sunmotors_list.append(self)
         
-    def vehicle_type(self):
-        print("Sunmotors Sedan")
+    def cartype(self):
+        print('hydrogen suv')
+        
+    def set_inventory(self,value):
+        self.__inventory = value
+        
+    def get_inventory(self):
+        return self.__inventory
+        
+        
+class sunmotors_ev_suvs(sunmotors_electric):
+    # __init__ is known as the constructor
+    def __init__(self,model=None,year=None,msrp=None,traits=None,inventory=None):
+        print("Sunmotors EV SUV Created")
+        super().__init__(model,year,msrp,traits)
+        # Encapsulation
+        self.__inventory = inventory
+        sunmotors.sunmotors_list.append(self)
+        
+    # Method overriding
+    def cartype(self):
+        print('ev suv')
+    # Encapsulation set & get method    
+    def set_inventory(self,value):
+        self.__inventory = value
+        
+    def get_inventory(self):
+        return self.__inventory
+    
+    
+class sunmotors_hydrogen_sedans(sunmotors_hydrogen):
+    
+    def __init__(self,model=None,year=None,msrp=None,traits=None,inventory=None):
+        # instance attribute
+        print("Sunmotors Hydrogen Sedan Created")
+        super().__init__(model,year,msrp,traits)
+        self.__inventory = inventory
+        sunmotors.sunmotors_list.append(self)
+        
+    def cartype(self):
+        print('hydrogen sedan')
+        
+    def set_inventory(self,value):
+        self.__inventory = value
+        
+    def get_inventory(self):
+        return self.__inventory
+        
+        
+class sunmotors_ev_sedans(sunmotors_electric):
+    # __init__ is known as the constructor
+    def __init__(self,model,year,msrp,traits,inventory):
+        print("Sunmotors EV Sedan Created")
+        super().__init__(model,year,msrp,traits)
+        self.__inventory = inventory
+        sunmotors.sunmotors_list.append(self)
+        
+    def cartype(self):
+        print('ev sedan')
+        
+    def set_inventory(self,value):
+        self.__inventory = value
+        
+    def get_inventory(self):
+        return self.__inventory
+
+        
+def ducktyping_cartype(obj):
+    obj.cartype()
 
 
 # In[3]:
 
 
-sedan_A = sunmotors_sedans(model='sedan_A',year=2022,msrp=24000,traits='Midsize Sedan',inventory=10)
-suv_A = sunmotors_suvs(model='suv_A',year=2022,msrp=33000,traits='luxury suv',inventory=5)
+# Object Instantiation
+hydrogen_sedan_A = sunmotors_hydrogen_sedans(model='hydrogen sedan_A',year=2022,msrp=24000,traits='hydrogen sedan',inventory=10)
+hydrogen_suv_A = sunmotors_hydrogen_suvs(model='hydrogen_suv_A',year=2022,msrp=33000,traits='hydrogen suv',inventory=5)
+hydrogen_suv_B = sunmotors_hydrogen_suvs(model='hydrogen_suv_B',msrp=33000,inventory=5)
+ev_suv_A = sunmotors_ev_suvs(model='ev_suv_A',year=2022,msrp=70000,traits='ev suv',inventory=6)
+ev_sedan_A = sunmotors_ev_sedans(model='ev_sedan_A',year=2023,msrp=60000,traits='ev sedan',inventory=7)
 
 
 # In[4]:
@@ -148,7 +232,6 @@ suv_A = sunmotors_suvs(model='suv_A',year=2022,msrp=33000,traits='luxury suv',in
 
 class sunmotors_finance():
     # Buy-in
-    
     current_revenue = 1000000
     employee_list = []
     print("Welcome to Sunmotors Finance")
@@ -201,7 +284,6 @@ class sunmotors_finance():
 
 
 class sunmotors_cs():
-    # Complete
     
     employee_list = []
     
@@ -589,8 +671,45 @@ EGR_Employee1 = sunmotors_egr(name='Gary Bald',dept='EGR',title='EGR Manager',sa
 EGR_Employee2 = sunmotors_egr(name='David Boo',dept='EGR',title='Data Scientist',salary=100000)
 
 
-# In[ ]:
+# In[11]:
 
 
-main()
+ev_suv_A.basic_specs()
+
+
+# In[12]:
+
+
+hydrogen_suv_A.test_drive()
+
+
+# In[13]:
+
+
+hydrogen_sedan_A.basic_specs()
+
+
+# In[14]:
+
+
+hydrogen_suv_B.basic_specs()
+
+
+# In[15]:
+
+
+ev_suv_A.cartype()
+ducktyping_cartype(ev_suv_A)
+ducktyping_cartype(hydrogen_sedan_A)
+
+
+# In[16]:
+
+
+ev_suv_A.set_inventory(30)
+hydrogen_suv_A.set_inventory(40)
+# ev_suv_A.__inventory (Cause error)
+# ev_suv_A.__inventory = 40 (This won't work since it's a private var)
+print(ev_suv_A.get_inventory())
+print(hydrogen_suv_A.get_inventory())
 
