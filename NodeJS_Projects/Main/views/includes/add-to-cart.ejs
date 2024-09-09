@@ -1,0 +1,6 @@
+<!-- action="/cart": This tells the browser that when the form is submitted, it should send the data to the /cart route in shoproute -->
+<form action="/cart" method="post">
+  <button class="btn" type="submit">Add to Cart</button>
+  <!-- Hidden from page -->
+  <input type="hidden" name="productId" value="<%= product.id %>" />
+</form>
